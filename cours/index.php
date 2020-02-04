@@ -16,8 +16,19 @@ $maVoiture = new Voiture(1);
 echo $maVoiture->getColor().'<br>';
 */
 
-$maVoiture = new Voiture(1);
-$maVoiture->changeImat("DD 100 JJ");
+//$maVoiture = new Voiture(1);
+
+//$plate = "CF 238 XF";
+//$obj = Voiture::getFromImat($plate);
+
+$myCar = Voiture::create([
+    'couleur' => 'rose',
+    'immatriculation' => 'JB 007 JB',
+    'nbPortes' => '3',
+    'moteur' => 'turbo'
+        ]);
+
+var_dump($myCar);
 
 
 // liste les parcs auto
