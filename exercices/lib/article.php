@@ -1,7 +1,8 @@
 <?php
 require_once ("bdd.php");
 
-class Article {
+class Article
+{
 
     /**
      * titre de l'article
@@ -27,27 +28,32 @@ class Article {
      */
     protected $text = null;
 
+    public static $authoriseUpdate = ['title', 'slug', 'text'];
+
     /**
      * article constructor.
      * @param $id
      */
 
-    public function __construct($id) {
+
+    public function __construct($id=null)
+    {
 
         $dbConnection = BDD::getConnexion();
         $inst = $dbConnection->query('SELECT * FROM post WHERE id='.$id);
+        if(!$inst)
+            return;
 
         $result = $inst->fetch(PDO::FETCH_ASSOC);
-        //var_dump($result);
+        if(!$result || empty($result['id']))
+            return;
+        var_dump($result);
 
-
-
-        /*
         $this->id = $result['id'];
         $this->slug = $result['slug'];
         $this->title = $result['title'];
         $this->text = $result['text'];
-        */
+
     }
 
     public function update ($property, $value) {
@@ -59,7 +65,8 @@ class Article {
         return $this->__save();
     }
 
-    public function __save() {
+    public function __save()
+    {
 
         $bdd = BDD::getConnexion();
 
@@ -97,8 +104,52 @@ class Article {
         } else {
             return false ;
         }
-    */
+        */
     }
+
+    public static function create($params)
+    {
+        //var_dump($params);
+        $bdd = BDD::getConnexion();
+        $property = [];
+        $value = [];
+        foreach ($params as $p => $v)
+        {
+            if (in_array($p, Article::$authoriseUpdate)) {
+                $property[] = $p;
+                $value[] = $bdd->quote($v);
+            }
+        }
+
+        $query = 'INSERT INTO post ('.implode(',',$property).')
+                            VALUES ('.implode(',', $value).')';
+
+        $bdd->query($query);
+        $id = $bdd->lastInsertId();
+
+        return new Article($id);
+    }
+
+    public static function findAll($filters=[])
+    {
+        $bdd = BDD::getConnexion();
+
+        $clauses = [];
+        foreach ($filters as $k => $f) {
+            $clauses[] = $k.'='.$bdd->quote($f);
+        }
+        $where = '';
+        if (!empty($clauses)) {
+            $where = 'WHERE '.implode(' AND ', $clauses);
+        }
+        $query = 'SELECT * FROM post '.$where;
+        var_dump($query);
+        $res = $bdd->query($query);
+        return $res->fetchAll(PDO::FETCH_CLASS, 'Article');
+    }
+
+
+
 
 
 

@@ -2,6 +2,7 @@
 
 // définir objet parc auto
 require_once("lib/voiture.php");
+require_once("lib/parcAuto.php");
 
 
 
@@ -21,14 +22,26 @@ echo $maVoiture->getColor().'<br>';
 //$plate = "CF 238 XF";
 //$obj = Voiture::getFromImat($plate);
 
+/*
 $myCar = Voiture::create([
-    'couleur' => 'rose',
+    'couleur' => 'cameleon',
     'immatriculation' => 'JB 007 JB',
     'nbPortes' => '3',
-    'moteur' => 'turbo'
-        ]);
 
-var_dump($myCar);
+        ]);
+*/
+//$allCars = Voiture::findAll();
+//var_dump($allCars);
+
+
+
+$parcs = ParcAuto::findOne(['city' => 'Geneve']);
+
+$allBlueCars = $parcs->getAllCars(['couleur'=> 'bleu']);
+var_dump($allBlueCars);
+
+
+
 
 
 // liste les parcs auto
